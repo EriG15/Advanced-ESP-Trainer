@@ -11,5 +11,8 @@ import * as firebase from 'firebase'
 
 let app = !firebase.default.apps.length ? firebase.default.initializeApp(firebaseConfig) : firebase.default.app();
 const auth = firebase.default.auth(app);
+const db = app.firestore();
 
-export { app, auth }
+
+export { db, app, auth };
+
