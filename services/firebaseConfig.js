@@ -1,18 +1,15 @@
 import * as firebase from 'firebase'
 
   const firebaseConfig = {
-  apiKey: "AIzaSyDflZqKU3TIN6iaqYaAB8BZtr9nz16y_dI",
-  authDomain: "localvibe-84968.firebaseapp.com",
-  projectId: "localvibe-84968",
-  storageBucket: "localvibe-84968.appspot.com",
-  messagingSenderId: "125966739424",
-  appId: "1:125966739424:web:5ba20b4ce39c381cdfed85"
+  apiKey: "AIzaSyCCGAM2_thguINbXRhpRczad5TJcvmtL8Y",
+  authDomain: "esp-trainer-8f1d0.firebaseapp.com",
+  projectId: "esp-trainer-8f1d0",
+  storageBucket: "esp-trainer-8f1d0.appspot.com",
+  messagingSenderId: "837172371134",
+  appId: "1:837172371134:web:6949a225d8b65a323e08ef"
 };
 
 let app = !firebase.default.apps.length ? firebase.default.initializeApp(firebaseConfig) : firebase.default.app();
 const auth = firebase.default.auth(app);
-const db = app.firestore();
 
-
-export { db, app, auth };
-
+export { app, auth }

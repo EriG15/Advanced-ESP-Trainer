@@ -12,13 +12,13 @@ import { ThemeContext } from '../context/ThemeContext';
 import StyledText from '../components/texts/StyledText';
 import SettingsItem from '../components/settings/SettingsItem';
 import { Ionicons } from '@expo/vector-icons';
-import {db, app, auth} from "../services/firebaseConfig"
+import { auth } from '../services/firebaseConfig'
 
 const Settings = ({ navigation }) => {
 
   const { theme, updateTheme } = useContext(ThemeContext);
+  const [email, setEmail] = useState("");
   let activeColors = colors[theme.mode];
-  
 
   //here we set the state of the switch to the current theme
   //theme.mode is the current theme which we get from the context
@@ -30,11 +30,6 @@ const Settings = ({ navigation }) => {
 
     updateTheme();
     setIsDarkTheme((prev) => !prev);
-
-    const userUID = auth.currentUser.uid;
-    db.collection('users').doc(userUID).set({
-      isDark: isDarkTheme,
-    });
   };
 
   useEffect(() => {
@@ -47,11 +42,10 @@ const Settings = ({ navigation }) => {
     });
   }, []);
 
-  const logoutAction = () => {
-    auth.signOut();
-    navigation.navigate('Login')
-  }
-
+  useEffect(() => {
+    const userEmail = auth.currentUser.email;
+    setEmail(userEmail);
+  }, []);
 
   return (
     <ScrollView
@@ -82,11 +76,11 @@ const Settings = ({ navigation }) => {
         </SettingsItem>
       </View>
       <View style={styles.section}>
-        <SettingsItem label={'Email: ' + auth.currentUser.email}>
+        <SettingsItem label={'Email: ' + global.userEmail}>
         </SettingsItem>
       </View>
       <View style={styles.logout}>
-        <TouchableOpacity onPress={logoutAction}>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
           <SettingsItem>
             <Ionicons name='log-out-outline' size={24} color='red' />
             <StyledText style={{ color: 'red' }}> Logout</StyledText>

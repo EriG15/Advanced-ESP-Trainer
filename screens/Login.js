@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { colors } from '../config/theme';
 import { ThemeContext } from '../context/ThemeContext';
 import {
@@ -8,7 +8,6 @@ import {
   Image,
   StyleSheet,
   TextInput,
-  Appearance,
 } from 'react-native';
 
 import { MaterialIcons } from '@expo/vector-icons';
@@ -16,31 +15,11 @@ import { Ionicons } from '@expo/vector-icons';
 
 import CustomButton from '../components/CustomButton';
 import CustomInputField from '../components/CustomInputField';
-import {db, app, auth} from "../services/firebaseConfig"
+import {auth} from "../services/firebaseConfig"
 
 const Login = ({ navigation }) => {
-  const { theme, updateTheme } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   let activeColors = colors[theme.mode];
-
-  const [isDarkTheme, setIsDarkTheme] = useState(theme.mode === 'dark');
-
-
-  const toggleTheme = () => {
-    console.log(`toggling theme`)
-    updateTheme();
-    setIsDarkTheme((prev) => !prev);
-  };
-
-  useEffect(() => {
-    //here we listen for the color scheme change and update the state of the switch
-    //this is necessary so that the switch automatically updates
-    //when the user changes the theme from the settings
-    Appearance.addChangeListener(({ colorScheme }) => {
-      console.log(`colorScheme: ${colorScheme}`)
-      colorScheme === 'dark' ? setIsDarkTheme(true) : setIsDarkTheme(false);
-    });
-  }, []);
-
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -48,30 +27,10 @@ const Login = ({ navigation }) => {
   const handleLogin = async () => {
     try {
         const userCredential = await auth.signInWithEmailAndPassword(email, password);
-        console.log('User logged in successfully:', userCredential.user);
-
-        const userUID = auth.currentUser.uid;
-        const userDocRef = db.collection('users').doc(userUID);
-
-        userDocRef.get().then((doc) => {
-          if (doc.exists) {
-            // Document exists, retrieve the boolean value
-            const isDark = doc.data().isDark;
-            console.log('Is dark:', isDark);
-            if (isDark === (theme.mode === 'light')) {
-              toggleTheme()
-            }
-          } else {
-            // Document does not exist
-            console.log('No such document!');
-          }
-        }).catch((error) => {
-          console.log('Error getting document:', error);
-        });
-
+        console.log('User registered successfully:', userCredential.user);
+        global.userEmail = email
         navigation.navigate('Footer');
       } 
-      
     catch (error) {
       console.error(error);
     } 

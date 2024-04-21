@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import { colors } from '../config/theme';
 import { ThemeContext } from '../context/ThemeContext';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
 
 
 import DatePicker from 'react-native-date-picker';
@@ -21,14 +20,14 @@ import CustomInputField from '../components/CustomInputField';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 
-import {db, app, auth} from "../services/firebaseConfig"
+import {auth} from "../services/firebaseConfig"
 import CustomButton from '../components/CustomButton';
 
 const Register = ({ navigation }) => {
   const { theme } = useContext(ThemeContext);
   let activeColors = colors[theme.mode];
 
-  {/* const [username, setUsername] = useState(''); */}
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
@@ -71,13 +70,10 @@ const Register = ({ navigation }) => {
     if (validateForm()) {
       try {
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        const userUID = auth.currentUser.uid;
-        db.collection('users').doc(userUID).set({
-          isDark: theme.mode === 'dark',
-        });
+        console.log('User registered successfully:', userCredential.user);
         navigation.navigate('RegisterSuccess');
       } catch (error) {
-        console.error("handleSignUp error:", error);
+        console.error(error);
       }
     } else {
       console.log('Form is not valid');
@@ -108,7 +104,6 @@ const Register = ({ navigation }) => {
         Register Account With Us
       </Text>
 
-      {/*
       <TextInput
         style={[
           styles.input,
@@ -119,7 +114,6 @@ const Register = ({ navigation }) => {
         value={username}
         onChangeText={(text) => setUsername(text)}
       />
-      */}
 
       <TextInput
         style={[
